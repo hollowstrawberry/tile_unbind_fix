@@ -32,17 +32,12 @@ public class TileUnbindHook implements IXposedHookLoadPackage {
                         protected void afterHookedMethod(MethodHookParam param) {
                             boolean requested = (boolean) param.args[0];
                             XposedBridge.log(TAG + ": setBindRequested(" + requested + ") on " + param.thisObject);
-
                             if (requested) {
                                 return;
                             }
-
                             try {
-                                Handler handler = (Handler) XposedHelpers.getObjectField(
-                                        param.thisObject, "mHandler");
-                                Runnable unbindRunnable = (Runnable) XposedHelpers.getObjectField(
-                                        param.thisObject, "mUnbind");
-
+                                Handler handler = (Handler) XposedHelpers.getObjectField(param.thisObject, "mHandler");
+                                Runnable unbindRunnable = (Runnable) XposedHelpers.getObjectField(param.thisObject, "mUnbind");
                                 handler.removeCallbacks(unbindRunnable);
                                 XposedBridge.log(TAG + ": cancelled pending idle-unbind");
                             } catch (Throwable innerT) {
